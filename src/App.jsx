@@ -8,9 +8,7 @@ import {
   CheckCircle2,
   ChevronDown,
   Code2,
-  FileCheck2,
   Fuel,
-  Gavel,
   Layers3,
   Menu,
   MessageCircle,
@@ -46,7 +44,7 @@ const projects = [
     accent: "blue",
     icon: Search,
     image: "assets/verbalkrieg-card.png",
-    alt: "Dunkle Oberfläche für Debatten und Quellenprüfung",
+    alt: "Originales VERBALKRIEG-Logo",
     projectUrl: "https://app.verbalkrieg.de/",
   },
   {
@@ -67,7 +65,7 @@ const projects = [
     accent: "cyan",
     icon: MessageCircle,
     image: "assets/kidenka-messenger-card.png",
-    alt: "Kidenka Messenger mit mehreren Rollen in einem Chat",
+    alt: "Echte KIDENKA-Landingpage mit Messenger-Teamchat",
     projectUrl: "https://app.kidenka.de/",
   },
   {
@@ -88,8 +86,8 @@ const projects = [
     accent: "teal",
     icon: Fuel,
     image: "assets/tankstellen-card.png",
-    alt: "Dashboard für Tankstellen-Schichtplanung und Aufgaben",
-    projectUrl: null,
+    alt: "Echter Mitarbeiterzugang des Tankstellenorganisators",
+    projectUrl: "https://tankstellen.retilo.de/",
   },
 ];
 
@@ -141,10 +139,50 @@ function Button({ children, variant = "primary", href = "#kontakt", onClick, typ
 }
 
 function ProjectDemo({ project }) {
-  const [demoState, setDemoState] = useState("idle");
+  const [proofStep, setProofStep] = useState(0);
+  const [chatPhase, setChatPhase] = useState("idle");
+  const [planStep, setPlanStep] = useState(0);
   const [perspective, setPerspective] = useState("team");
+  const [claim, setClaim] = useState("Diese Lösung ist automatisch die beste, weil sie am meisten Funktionen hat.");
+  const [question, setQuestion] = useState("Welche Option passt besser zu meinem Problem?");
 
-  const resetDemo = () => setDemoState("idle");
+  useEffect(() => {
+    if (project.id !== "verbalkrieg" || proofStep < 1 || proofStep >= 4) return undefined;
+    const timer = window.setTimeout(() => setProofStep((current) => current + 1), 650);
+    return () => window.clearTimeout(timer);
+  }, [project.id, proofStep]);
+
+  useEffect(() => {
+    if (project.id !== "kidenka" || chatPhase !== "sending") return undefined;
+    const timer = window.setTimeout(() => setChatPhase("answered"), 900);
+    return () => window.clearTimeout(timer);
+  }, [project.id, chatPhase]);
+
+  useEffect(() => {
+    if (project.id !== "tankstellen" || planStep < 1 || planStep >= 4) return undefined;
+    const timer = window.setTimeout(() => setPlanStep((current) => current + 1), 600);
+    return () => window.clearTimeout(timer);
+  }, [project.id, planStep]);
+
+  const resetDemo = () => {
+    setProofStep(0);
+    setChatPhase("idle");
+    setPlanStep(0);
+  };
+
+  const proofStages = [
+    ["ARCHON", "Aussage zerlegen"],
+    ["PROCTOR", "Gegenposition prüfen"],
+    ["EVIDENCE", "Quellenbedarf markieren"],
+    ["ARBITER", "Ergebnis einordnen"],
+  ];
+
+  const planStages = [
+    ["01", "Verfügbarkeiten"],
+    ["02", "Besetzung"],
+    ["03", "Konflikte"],
+    ["04", "Benachrichtigungen"],
+  ];
 
   return (
     <div className={`demo-panel demo-${project.id}`}>
@@ -160,21 +198,30 @@ function ProjectDemo({ project }) {
         <>
           <div className="demo-claim-card">
             <span className="demo-label">Beispielbehauptung</span>
-            <p>„Diese Lösung ist automatisch die beste, weil sie am meisten Funktionen hat.“</p>
+            <textarea aria-label="Behauptung für die Prüfung" value={claim} onChange={(event) => setClaim(event.target.value)} rows="2" />
           </div>
-          <div className="demo-check-list">
-            <div><FileCheck2 size={16} /><span>Behauptung erkannt</span><em>prüfbar</em></div>
-            <div><Gavel size={16} /><span>Gegenposition wird erstellt</span><em>aktiv</em></div>
-            <div><Search size={16} /><span>Quellenbedarf markiert</span><em>offen</em></div>
+          <div className="demo-pipeline" aria-live="polite">
+            {proofStages.map(([role, label], index) => {
+              const complete = proofStep > index;
+              const active = proofStep === index + 1;
+              return (
+                <div className={`demo-pipeline-row ${complete ? "is-complete" : ""} ${active ? "is-active" : ""}`} key={role}>
+                  <span className="demo-pipeline-dot">{complete ? <Check size={11} /> : index + 1}</span>
+                  <span><strong>{role}</strong>{label}</span>
+                  <em>{complete ? "fertig" : active ? "läuft" : "bereit"}</em>
+                </div>
+              );
+            })}
           </div>
-          {demoState === "checked" ? (
+          {proofStep === 4 ? (
             <div className="demo-result demo-result-blue">
               <CheckCircle2 size={18} />
-              <div><strong>Prüfung abgeschlossen</strong><span>Die Aussage ist nicht automatisch belegt. Entscheidend sind Kriterien, Quellen und der konkrete Anwendungsfall.</span></div>
+              <div><strong>Prüfung abgeschlossen</strong><span>Die Aussage ist nicht automatisch belegt. Kriterien, Quellen und der konkrete Anwendungsfall entscheiden.</span><div className="demo-result-grid"><span><b>Gegenprüfung</b> aktiv</span><span><b>Quellenbedarf</b> markiert</span></div></div>
+              <button className="demo-reset" type="button" onClick={resetDemo} aria-label="Prüfung zurücksetzen"><RotateCcw size={15} /></button>
             </div>
           ) : (
-            <button className="demo-action" type="button" onClick={() => setDemoState("checked")}>
-              Prüfung simulieren <ArrowRight size={16} />
+            <button className="demo-action" type="button" disabled={proofStep > 0} onClick={() => setProofStep(1)}>
+              {proofStep > 0 ? "Mehrere Prüfer arbeiten …" : "Aussage prüfen"} <ArrowRight size={16} />
             </button>
           )}
         </>
@@ -184,16 +231,21 @@ function ProjectDemo({ project }) {
         <>
           <div className="demo-chat-window">
             <div className="demo-chat-topline"><MessageSquareText size={15} /><span>Teamchat · 3 Perspektiven</span></div>
-            <div className="demo-bubble demo-bubble-user">Welche Option passt besser zu meinem Problem?</div>
-            <div className="demo-bubble demo-bubble-ai">
-              <span className="demo-avatar-stack"><span>F</span><span>E</span><span>O</span></span>
-              <p>{perspective === "team" ? "Wir betrachten die Frage gemeinsam: fachlich, praktisch und aus Sicht deiner persönlichen Situation." : perspective === "fachlich" ? "Aus fachlicher Sicht sind vor allem die Anforderungen, Risiken und überprüfbaren Kriterien entscheidend." : "Aus Alltagssicht sollte die Lösung verständlich bleiben und dir konkret Arbeit abnehmen."}</p>
-            </div>
+            <div className="demo-bubble demo-bubble-user">{question}</div>
+            {chatPhase === "idle" && <div className="demo-chat-empty">Stelle eine Frage. KIDENKA stellt daraus einen passenden Teamchat zusammen.</div>}
+            {chatPhase === "sending" && <div className="demo-typing"><span /> <span /> <span /> Team wird zusammengestellt …</div>}
+            {chatPhase === "answered" && <div className="demo-team-replies">
+              <div className="demo-reply"><span className="demo-reply-avatar">F</span><div><strong>Fachrolle</strong><p>Entscheidend sind Anforderungen, Risiken und überprüfbare Kriterien.</p></div></div>
+              <div className="demo-reply"><span className="demo-reply-avatar reply-cyan">E</span><div><strong>Erfahrung</strong><p>Im Alltag sollte die Lösung verständlich bleiben und dir Arbeit abnehmen.</p></div></div>
+              <div className="demo-reply demo-reply-summary"><span className="demo-reply-avatar reply-teal">Σ</span><div><strong>Teamfazit</strong><p>{perspective === "fachlich" ? "Erst die Kriterien klären, dann die Optionen vergleichen." : perspective === "alltag" ? "Die beste Lösung ist die, die im Alltag zuverlässig entlastet." : "Wir verbinden Fachwissen, Erfahrung und deine konkrete Situation."}</p></div></div>
+            </div>}
           </div>
+          <div className="demo-composer"><input aria-label="Frage an den KIDENKA-Teamchat" value={question} onChange={(event) => setQuestion(event.target.value)} /><button type="button" aria-label="Teamchat starten" disabled={chatPhase === "sending" || !question.trim()} onClick={() => setChatPhase("sending")}><Send size={14} /></button></div>
           <div className="demo-perspectives" aria-label="Perspektive auswählen">
             <button className={perspective === "team" ? "is-selected" : ""} type="button" onClick={() => setPerspective("team")}><Users size={14} /> Team</button>
             <button className={perspective === "fachlich" ? "is-selected" : ""} type="button" onClick={() => setPerspective("fachlich")}><ShieldCheck size={14} /> Fachlich</button>
             <button className={perspective === "alltag" ? "is-selected" : ""} type="button" onClick={() => setPerspective("alltag")}><MessageCircle size={14} /> Alltag</button>
+            {chatPhase === "answered" && <button className="demo-reset-pill" type="button" onClick={resetDemo}><RotateCcw size={13} /> Neue Frage</button>}
           </div>
         </>
       )}
@@ -202,19 +254,22 @@ function ProjectDemo({ project }) {
         <>
           <div className="demo-schedule">
             <div className="demo-schedule-head"><span>JARVIS · Planentwurf</span><span>KW 34</span></div>
-            <div className="demo-shift"><span>Mo · Frühschicht</span><strong>{demoState === "planned" ? "2 Mitarbeitende" : "noch offen"}</strong><i className={demoState === "planned" ? "is-done" : ""}>{demoState === "planned" ? "besetzt" : "wartet auf Verfügbarkeiten"}</i></div>
-            <div className="demo-shift"><span>Mo · Spätschicht</span><strong>{demoState === "planned" ? "2 Mitarbeitende" : "Konflikt erkannt"}</strong><i className={demoState === "planned" ? "is-done" : "needs-action"}>{demoState === "planned" ? "geprüft" : "Ersatz wird gesucht"}</i></div>
-            <div className="demo-shift"><span>Di · Übergabe</span><strong>{demoState === "planned" ? "Aufgabe erstellt" : "nicht zugeordnet"}</strong><i className={demoState === "planned" ? "is-done" : ""}>{demoState === "planned" ? "informiert" : "offen"}</i></div>
+            <div className="demo-shift"><span>Mo · Frühschicht</span><strong>{planStep === 4 ? "2 Mitarbeitende" : "wird geprüft"}</strong><i className={planStep === 4 ? "is-done" : ""}>{planStep === 4 ? "besetzt" : "Verfügbarkeit"}</i></div>
+            <div className="demo-shift"><span>Mo · Spätschicht</span><strong>{planStep === 4 ? "2 Mitarbeitende" : "Konfliktprüfung"}</strong><i className={planStep === 4 ? "is-done" : "needs-action"}>{planStep === 4 ? "geprüft" : "JARVIS prüft"}</i></div>
+            <div className="demo-shift"><span>Di · Übergabe</span><strong>{planStep === 4 ? "Aufgabe erstellt" : "wird vorbereitet"}</strong><i className={planStep === 4 ? "is-done" : ""}>{planStep === 4 ? "informiert" : "offen"}</i></div>
           </div>
-          {demoState === "planned" ? (
+          <div className="demo-jarvis-pipeline" aria-live="polite">
+            {planStages.map(([number, label], index) => <span className={planStep > index ? "is-done" : planStep === index + 1 ? "is-active" : ""} key={number}><b>{planStep > index ? <Check size={11} /> : number}</b>{label}</span>)}
+          </div>
+          {planStep === 4 ? (
             <div className="demo-result demo-result-teal">
               <CheckCircle2 size={18} />
               <div><strong>JARVIS hat den Entwurf erstellt</strong><span>Verfügbarkeiten geprüft, einen Konflikt markiert und eine Ersatzsuche vorbereitet.</span></div>
               <button className="demo-reset" type="button" onClick={resetDemo} aria-label="Demo zurücksetzen"><RotateCcw size={15} /></button>
             </div>
           ) : (
-            <button className="demo-action demo-action-teal" type="button" onClick={() => setDemoState("planned")}>
-              JARVIS planen lassen <Bot size={16} />
+            <button className="demo-action demo-action-teal" type="button" disabled={planStep > 0} onClick={() => setPlanStep(1)}>
+              {planStep > 0 ? "JARVIS koordiniert …" : "JARVIS Plan erzeugen"} <Bot size={16} />
             </button>
           )}
         </>
@@ -301,9 +356,15 @@ export function App() {
           </div>
 
           <div className="hero-visual" aria-label="Aus Ideen werden Systeme">
-            <div className="hero-image-frame">
-              <img src="assets/retilo-network-hero.png" alt="Leuchtendes Netzwerk aus verbundenen Datenpunkten" />
-            </div>
+             <div className="hero-image-frame">
+               <img src="assets/retilo-network-hero.png" alt="Leuchtendes Netzwerk aus verbundenen Datenpunkten" />
+               <span className="hero-network-pulse pulse-one" />
+               <span className="hero-network-pulse pulse-two" />
+               <span className="hero-network-pulse pulse-three" />
+             </div>
+             <span className="hero-flow-line hero-flow-one" aria-hidden="true" />
+             <span className="hero-flow-line hero-flow-two" aria-hidden="true" />
+             <span className="hero-flow-line hero-flow-three" aria-hidden="true" />
             <div className="hero-output hero-output-products">
               <span className="output-icon"><Boxes size={17} strokeWidth={1.7} /></span>
               <span><small>01</small>Produkte</span>
@@ -316,7 +377,7 @@ export function App() {
               <span className="output-icon"><Code2 size={17} strokeWidth={1.7} /></span>
               <span><small>03</small>Lösungen</span>
             </div>
-            <div className="hero-visual-caption"><Sparkles size={14} /> aus einzelnen Punkten wird ein System</div>
+             <div className="hero-visual-caption"><Sparkles size={14} /> Systemfluss · aus einzelnen Punkten wird ein System</div>
           </div>
         </section>
 
@@ -366,7 +427,7 @@ export function App() {
                     <h3>{project.title}</h3>
                     <p>{project.description}</p>
                     <p className="project-differentiator">{project.differentiator}</p>
-                    <span className="card-link">Details & Demo <ArrowRight size={16} /></span>
+                     <span className="card-link">Demo starten <ArrowRight size={16} /></span>
                   </div>
                 </article>
               );
@@ -384,6 +445,7 @@ export function App() {
               </div>
               <div className="project-detail-grid">
                 <div className="project-detail-copy">
+                  <div className="project-detail-media"><img src={activeProject.image} alt={activeProject.alt} /><span>Originale Projektansicht</span></div>
                   <p className="project-detail-lede">{activeProject.detail}</p>
                   <div className="project-benefits">
                     {activeProject.benefits.map((benefit) => <div key={benefit}><CheckCircle2 size={16} /><span>{benefit}</span></div>)}

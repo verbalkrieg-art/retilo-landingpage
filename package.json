@@ -1,8 +1,17 @@
-YªçŠx-®éÜj×¢ëiºÚ+Š§j[h‘éÜ¢éí×S¢Ö¥¢ëiºÙbë5{
+{
   "name": "retilo-preview",
   "version": "0.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build ç[h‘éì¶»§q«^tˆèì(€€€€‰Ù¥Ñ•©Ì½Á±Õ¥¸µÉ•…Ğˆè€ˆÔ¸À¸Ğˆ°(€€€€‰±Õ¥‘”µÉ•…Ğˆè€‰xÄ¸ÌÄ¸Àˆ°(€€€€‰É•…Ğˆè€ˆÄä¸È¸Àˆ°(€€€€‰É•…Ğµ‘½´ˆè€ˆÄä¸È¸Àˆ°(€€€€‰Ù¥Ñ”ˆè€ˆØ¸Ğ¸Èˆ(€ô)ô(
+    "build": "vite build"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "lucide-react": "^0.468.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "vite": "^6.0.5"
+  }
+}
