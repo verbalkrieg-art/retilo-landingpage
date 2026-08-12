@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">ReTiLo</title>
+  <desc id="desc">Stilisiertes R aus verbundenen Linien</desc>
+  <defs>
+    <linearGradient id="bg" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111c2b"/>
+      <stop offset="1" stop-color="#08101b"/>
+    </linearGradient>
+    <linearGradient id="mark" x1="17" y1="13" x2="49" y2="52" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#62a5ff"/>
+      <stop offset=".55" stop-color="#22d3ee"/>
+      <stop offset="1" stop-color="#5eead4"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="url(#bg)"/>
+  <path d="M19 51V13h15.5c8.2 0 13.5 4.4 13.5 11.2 0 5.4-3.2 9.2-8.7 10.7L50 51h-8.2l-9.1-14H26v14zM26 19v12h8.1c4 0 6.8-2.4 6.8-6s-2.8-6-6.8-6z" fill="url(#mark)"/>
+  <path d="M13 14 7 9M51 53l6 5M49 12l7-5" stroke="#62a5ff" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+  <circle cx="7" cy="9" r="2.5" fill="#22d3ee"/>
+  <circle cx="57" cy="58" r="2.5" fill="#5eead4"/>
+  <circle cx="56" cy="7" r="2.5" fill="#62a5ff"/>
+</svg>
