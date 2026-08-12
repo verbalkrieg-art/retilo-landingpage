@@ -44,7 +44,7 @@ const projects = [
     accent: "blue",
     icon: Search,
     image: "assets/verbalkrieg-card.png",
-    alt: "Originales VERBALKRIEG-Logo",
+    alt: "Prüfauftrag in VERBALKRIEG mit Argumenten, Quellen, Belegen und Prüfstatus",
     projectUrl: "https://app.verbalkrieg.de/",
   },
   {
@@ -86,7 +86,7 @@ const projects = [
     accent: "teal",
     icon: Fuel,
     image: "assets/tankstellen-card.png",
-    alt: "Echter Mitarbeiterzugang des Tankstellenorganisators",
+    alt: "Desktop-Dashboard der Tankstellenorganisation mit Dienstplan und Aufgaben",
     projectUrl: "https://tankstellen.retilo.de/",
   },
 ];

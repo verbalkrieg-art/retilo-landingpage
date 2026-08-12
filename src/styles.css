@@ -355,7 +355,6 @@ h2 { margin-bottom: 0; font-size: clamp(38px, 4.1vw, 55px); line-height: 1.04; l
 }
 
 /* System-flow motion: the network is alive, but remains calm and readable. */
-.hero-image-frame::before { position: absolute; inset: 12% 8%; z-index: 2; content: ""; background: linear-gradient(105deg, transparent 38%, rgba(130, 211, 255, .22) 49%, rgba(255, 255, 255, .5) 50%, transparent 62%); background-size: 220% 100%; mix-blend-mode: screen; opacity: .38; pointer-events: none; animation: hero-sweep 6.5s ease-in-out infinite; }
 .hero-image-frame img { animation: hero-image-breathe 7s ease-in-out infinite; }
 .hero-flow-line { position: absolute; z-index: 1; right: 8px; width: 48%; height: 1px; background: linear-gradient(90deg, transparent, rgba(91, 183, 255, .1) 22%, rgba(91, 183, 255, .85) 50%, transparent 90%); background-size: 170% 100%; opacity: .52; pointer-events: none; animation: hero-flow 3.8s linear infinite; }
 .hero-flow-one { top: 142px; animation-delay: .25s; }
@@ -371,7 +370,6 @@ h2 { margin-bottom: 0; font-size: clamp(38px, 4.1vw, 55px); line-height: 1.04; l
 .hero-output-solutions { animation-delay: .9s, 1.9s; }
 .hero-visual-caption { max-width: 350px; line-height: 1.4; }
 
-@keyframes hero-sweep { 0%, 18% { background-position: 120% 0; } 55%, 72% { background-position: -20% 0; } 100% { background-position: -20% 0; } }
 @keyframes hero-image-breathe { 0%, 100% { transform: scale(1); opacity: .9; } 50% { transform: scale(1.018); opacity: 1; } }
 @keyframes hero-flow { 0% { background-position: 120% 0; opacity: .12; } 35% { opacity: .72; } 100% { background-position: -80% 0; opacity: .08; } }
 @keyframes network-pulse { 0% { transform: scale(.7); box-shadow: 0 0 0 0 rgba(91, 183, 255, .75), 0 0 10px rgba(91, 183, 255, .55); opacity: .2; } 30% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.65); box-shadow: 0 0 0 15px rgba(91, 183, 255, 0), 0 0 28px rgba(91, 183, 255, 0); opacity: 0; } }
