@@ -1,20 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
+  Bot,
   Boxes,
   Check,
+  CheckCircle2,
   ChevronDown,
   Code2,
+  FileCheck2,
   Fuel,
+  Gavel,
   Layers3,
   Menu,
   MessageCircle,
+  MessageSquareText,
   Network,
   PanelTop,
+  RotateCcw,
   Search,
   Send,
   ShieldCheck,
+  Users,
   Sparkles,
   Workflow,
   X,
@@ -27,10 +34,20 @@ const projects = [
     title: "VERBALKRIEG",
     description:
       "Argumente sortieren, Quellen prüfen und komplexe Themen verständlich machen.",
+    differentiator:
+      "Mehrere KIs prüfen Argumente, Quellen und Gegenpositionen — mit echter Gegenprüfung.",
+    benefits: [
+      "Behauptungen, Fakten und Vermutungen sauber trennen",
+      "Mehrere KI-Perspektiven gegeneinander prüfen",
+      "Aus der Prüfung klare nächste Schritte ableiten",
+    ],
+    detail:
+      "Verbalkrieg ist kein einfacher Chatbot. Das System zerlegt Aussagen, fordert Belege an und lässt unterschiedliche KI-Rollen prüfen, widersprechen und einordnen.",
     accent: "blue",
     icon: Search,
     image: "assets/verbalkrieg-card.png",
     alt: "Dunkle Oberfläche für Debatten und Quellenprüfung",
+    projectUrl: "https://app.verbalkrieg.de/",
   },
   {
     id: "kidenka",
@@ -38,10 +55,20 @@ const projects = [
     title: "KIDENKA",
     description:
       "Mehrere Perspektiven in einem Gespräch — damit aus Unsicherheit eine gute Entscheidung wird.",
+    differentiator:
+      "Ein KI-Messenger, in dem mehrere Rollen gemeinsam beraten und unterschiedliche Perspektiven sichtbar machen.",
+    benefits: [
+      "Einzelgespräche und Team-Chats mit mehreren Rollen",
+      "Fachwissen, Erfahrung und Charaktere kombinieren",
+      "Entscheidungen verständlicher und belastbarer machen",
+    ],
+    detail:
+      "KIDENKA bringt mehrere KI-Perspektiven in einen Messenger. Statt eine Antwort ungeprüft zu übernehmen, kannst du ein ganzes Team auf dieselbe Frage ansetzen.",
     accent: "cyan",
     icon: MessageCircle,
     image: "assets/kidenka-messenger-card.png",
     alt: "Kidenka Messenger mit mehreren Rollen in einem Chat",
+    projectUrl: "https://app.kidenka.de/",
   },
   {
     id: "tankstellen",
@@ -49,10 +76,20 @@ const projects = [
     title: "TANKSTELLEN-ORGANISATION",
     description:
       "Mitarbeiter, Schichten, Übergaben und Aufgaben an einem Ort — für einen Betrieb, der läuft.",
+    differentiator:
+      "JARVIS organisiert den Betrieb eigenständig: Verfügbarkeiten, Dienstpläne, Konflikte, Tausch und Ersatz.",
+    benefits: [
+      "JARVIS fragt Mitarbeiter nach ihren Möglichkeiten",
+      "Dienstpläne automatisch entwerfen und Konflikte erkennen",
+      "Bei Ausfällen Ersatz suchen und Beteiligte informieren",
+    ],
+    detail:
+      "Die Tankstellen-Organisation ist mehr als ein Dienstplan. JARVIS übernimmt die laufende Koordination und macht aus vielen Einzelinformationen einen belastbaren Plan.",
     accent: "teal",
     icon: Fuel,
     image: "assets/tankstellen-card.png",
     alt: "Dashboard für Tankstellen-Schichtplanung und Aufgaben",
+    projectUrl: null,
   },
 ];
 
@@ -103,11 +140,112 @@ function Button({ children, variant = "primary", href = "#kontakt", onClick, typ
   );
 }
 
+function ProjectDemo({ project }) {
+  const [demoState, setDemoState] = useState("idle");
+  const [perspective, setPerspective] = useState("team");
+
+  const resetDemo = () => setDemoState("idle");
+
+  return (
+    <div className={`demo-panel demo-${project.id}`}>
+      <div className="demo-header">
+        <div>
+          <span className="demo-kicker"><Sparkles size={13} /> Interaktive Demo</span>
+          <strong>So funktioniert es im Kern</strong>
+        </div>
+        <span className="demo-badge">Beispiel</span>
+      </div>
+
+      {project.id === "verbalkrieg" && (
+        <>
+          <div className="demo-claim-card">
+            <span className="demo-label">Beispielbehauptung</span>
+            <p>„Diese Lösung ist automatisch die beste, weil sie am meisten Funktionen hat.“</p>
+          </div>
+          <div className="demo-check-list">
+            <div><FileCheck2 size={16} /><span>Behauptung erkannt</span><em>prüfbar</em></div>
+            <div><Gavel size={16} /><span>Gegenposition wird erstellt</span><em>aktiv</em></div>
+            <div><Search size={16} /><span>Quellenbedarf markiert</span><em>offen</em></div>
+          </div>
+          {demoState === "checked" ? (
+            <div className="demo-result demo-result-blue">
+              <CheckCircle2 size={18} />
+              <div><strong>Prüfung abgeschlossen</strong><span>Die Aussage ist nicht automatisch belegt. Entscheidend sind Kriterien, Quellen und der konkrete Anwendungsfall.</span></div>
+            </div>
+          ) : (
+            <button className="demo-action" type="button" onClick={() => setDemoState("checked")}>
+              Prüfung simulieren <ArrowRight size={16} />
+            </button>
+          )}
+        </>
+      )}
+
+      {project.id === "kidenka" && (
+        <>
+          <div className="demo-chat-window">
+            <div className="demo-chat-topline"><MessageSquareText size={15} /><span>Teamchat · 3 Perspektiven</span></div>
+            <div className="demo-bubble demo-bubble-user">Welche Option passt besser zu meinem Problem?</div>
+            <div className="demo-bubble demo-bubble-ai">
+              <span className="demo-avatar-stack"><span>F</span><span>E</span><span>O</span></span>
+              <p>{perspective === "team" ? "Wir betrachten die Frage gemeinsam: fachlich, praktisch und aus Sicht deiner persönlichen Situation." : perspective === "fachlich" ? "Aus fachlicher Sicht sind vor allem die Anforderungen, Risiken und überprüfbaren Kriterien entscheidend." : "Aus Alltagssicht sollte die Lösung verständlich bleiben und dir konkret Arbeit abnehmen."}</p>
+            </div>
+          </div>
+          <div className="demo-perspectives" aria-label="Perspektive auswählen">
+            <button className={perspective === "team" ? "is-selected" : ""} type="button" onClick={() => setPerspective("team")}><Users size={14} /> Team</button>
+            <button className={perspective === "fachlich" ? "is-selected" : ""} type="button" onClick={() => setPerspective("fachlich")}><ShieldCheck size={14} /> Fachlich</button>
+            <button className={perspective === "alltag" ? "is-selected" : ""} type="button" onClick={() => setPerspective("alltag")}><MessageCircle size={14} /> Alltag</button>
+          </div>
+        </>
+      )}
+
+      {project.id === "tankstellen" && (
+        <>
+          <div className="demo-schedule">
+            <div className="demo-schedule-head"><span>JARVIS · Planentwurf</span><span>KW 34</span></div>
+            <div className="demo-shift"><span>Mo · Frühschicht</span><strong>{demoState === "planned" ? "2 Mitarbeitende" : "noch offen"}</strong><i className={demoState === "planned" ? "is-done" : ""}>{demoState === "planned" ? "besetzt" : "wartet auf Verfügbarkeiten"}</i></div>
+            <div className="demo-shift"><span>Mo · Spätschicht</span><strong>{demoState === "planned" ? "2 Mitarbeitende" : "Konflikt erkannt"}</strong><i className={demoState === "planned" ? "is-done" : "needs-action"}>{demoState === "planned" ? "geprüft" : "Ersatz wird gesucht"}</i></div>
+            <div className="demo-shift"><span>Di · Übergabe</span><strong>{demoState === "planned" ? "Aufgabe erstellt" : "nicht zugeordnet"}</strong><i className={demoState === "planned" ? "is-done" : ""}>{demoState === "planned" ? "informiert" : "offen"}</i></div>
+          </div>
+          {demoState === "planned" ? (
+            <div className="demo-result demo-result-teal">
+              <CheckCircle2 size={18} />
+              <div><strong>JARVIS hat den Entwurf erstellt</strong><span>Verfügbarkeiten geprüft, einen Konflikt markiert und eine Ersatzsuche vorbereitet.</span></div>
+              <button className="demo-reset" type="button" onClick={resetDemo} aria-label="Demo zurücksetzen"><RotateCcw size={15} /></button>
+            </div>
+          ) : (
+            <button className="demo-action demo-action-teal" type="button" onClick={() => setDemoState("planned")}>
+              JARVIS planen lassen <Bot size={16} />
+            </button>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
 export function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [activeProjectId, setActiveProjectId] = useState(null);
 
   const closeMenu = () => setMenuOpen(false);
+
+  const activeProject = projects.find((project) => project.id === activeProjectId) ?? null;
+
+  useEffect(() => {
+    if (activeProjectId) {
+      document.getElementById("projekt-detail")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [activeProjectId]);
+
+  const openProject = (projectId) => setActiveProjectId(projectId);
+
+  const handleProjectKeyDown = (event, projectId) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openProject(projectId);
+    }
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -207,8 +345,18 @@ export function App() {
           <div className="project-grid">
             {projects.map((project) => {
               const Icon = project.icon;
+              const isActive = project.id === activeProjectId;
               return (
-                <article className={`project-card project-${project.accent}`} key={project.id}>
+                <article
+                  className={`project-card project-${project.accent} ${isActive ? "is-active" : ""}`}
+                  key={project.id}
+                  role="button"
+                  tabIndex={0}
+                  aria-expanded={isActive}
+                  aria-controls="projekt-detail"
+                  onClick={() => openProject(project.id)}
+                  onKeyDown={(event) => handleProjectKeyDown(event, project.id)}
+                >
                   <div className="project-visual">
                     <img src={project.image} alt={project.alt} />
                     <div className="project-icon"><Icon size={19} strokeWidth={1.8} /></div>
@@ -217,12 +365,38 @@ export function App() {
                     <p className="project-eyebrow">{project.eyebrow}</p>
                     <h3>{project.title}</h3>
                     <p>{project.description}</p>
-                    <a className="card-link" href="#kontakt">Projekt ansehen <ArrowRight size={16} /></a>
+                    <p className="project-differentiator">{project.differentiator}</p>
+                    <span className="card-link">Details & Demo <ArrowRight size={16} /></span>
                   </div>
                 </article>
               );
             })}
           </div>
+
+          {activeProject && (
+            <section className={`project-detail project-${activeProject.accent}`} id="projekt-detail" aria-labelledby="project-detail-title">
+              <div className="project-detail-heading">
+                <div>
+                  <p className="eyebrow"><span className="eyebrow-mark">↳</span> Projekt im Fokus</p>
+                  <h3 id="project-detail-title">{activeProject.title}</h3>
+                </div>
+                <button className="project-detail-close" type="button" onClick={() => setActiveProjectId(null)} aria-label="Projektansicht schließen"><X size={18} /></button>
+              </div>
+              <div className="project-detail-grid">
+                <div className="project-detail-copy">
+                  <p className="project-detail-lede">{activeProject.detail}</p>
+                  <div className="project-benefits">
+                    {activeProject.benefits.map((benefit) => <div key={benefit}><CheckCircle2 size={16} /><span>{benefit}</span></div>)}
+                  </div>
+                  <div className="project-detail-actions">
+                    {activeProject.projectUrl ? <a className="button button-primary" href={activeProject.projectUrl} target="_blank" rel="noreferrer"><span>Zum Projekt</span><ArrowUpRight size={16} /></a> : <Button href="#kontakt">Projekt besprechen</Button>}
+                    <button className="button button-secondary" type="button" onClick={() => document.getElementById("projekt-detail")?.scrollIntoView({ behavior: "smooth", block: "start" })}><span>Demo ansehen</span><ChevronDown size={16} /></button>
+                  </div>
+                </div>
+                <ProjectDemo project={activeProject} />
+              </div>
+            </section>
+          )}
         </section>
 
         <section className="solutions section-shell section-divider" id="loesungen" aria-labelledby="solutions-title">
